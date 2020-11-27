@@ -1,3 +1,8 @@
+문제 주소 찾기 : acmicpc.net/problem/숫자
+표에서 문제 번호 복사해서 위에 주소 숫자 부분에 붙혀 넣기
+다 풀면 README.md 수정해서 O 추가하기
++ 소스코드 올리기
+
 # Code Monster Study
 
 **Study basic algorithm theories, techniques, and solve related problems for the LG CNS Code Monster competition.**
