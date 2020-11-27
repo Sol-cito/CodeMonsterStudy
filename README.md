@@ -4,7 +4,7 @@
 <br>
 다 풀면 
 <br>
-1. README.md 수정해서 O 추가하기
+1.README.md 수정해서 O 추가하기
 <br>
 2.소스코드 올리기
 
