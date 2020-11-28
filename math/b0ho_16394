@@ -1,0 +1,17 @@
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+//		int cases = sc.nextInt();
+//
+//		while (cases-- > 0) {
+//		}
+
+		final int hong = 1946;
+		int year = sc.nextInt();
+		int answer = year - hong;
+		System.out.println(answer);
+		
+	}
+}

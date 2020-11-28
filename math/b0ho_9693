@@ -1,0 +1,91 @@
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+//		int cases = sc.nextInt();
+
+//		while (cases-- > 0) {
+//			int answer = 0;
+//			int n = sc.nextInt();
+//
+//			
+//			
+//			System.out.println(n);
+//		}
+
+		// 순번 출려을 위해
+		int idx = 1;
+		while (true) {
+			int N = sc.nextInt();
+
+			// 0 일 때 종료해야됨
+			if (N == 0) {
+				break;
+			}
+
+			// N!/10^M = x
+			// N! = x * 10^M
+			//
+			// 120 = 5*4*3*2*1 / 10
+			//
+
+			// System.out.println(N);
+//			M = N / 5;
+//			if (N % 10 == 0) {
+//				M += N / 10;
+//			}
+
+			int tmp = (N - N % 5) / 5;
+			int M = tmp;
+			while (tmp >= 5) {
+//				System.out.println(tmp);
+				tmp = (tmp - tmp % 5) / 5;
+				M += tmp;
+			}
+
+			System.out.println("Case #" + idx++ + ": " + M);
+		}
+	}
+
+//     5 120
+// 6 720
+// 7 5040
+// 8 40320
+// 9 362880
+//10 3628800
+//11 39916800
+//12 479001600
+//13 6227020800
+//14 87178291200
+//15 1307674368000
+//16 
+//20 2432902008176640000
+//
+//5의 배수마다 1씩 증가한다??!
+//
+//팩토리얼 예상 결과 값의 맨뒤 0의 갯수를 알아야한다
+//
+//맨뒤가 0이 추가 되는경우 
+//: n*10
+//  2 * 5
+//  4 * 5
+//  6 * 5
+//  8 * 5
+
+//	// 팩토리얼을 전부 구하면 될리가 없다,,
+//	// 그래도 규칙 찾아보기
+//	public static void main(String[] args) {
+//		System.out.println(fact(19));
+//	}
+//
+//	
+//	// 팩토리얼 함수
+//	public static long fact(int n) {
+//		if (n <= 1)
+//			return n;
+//		else
+//			return fact(n - 1) * n;
+//	}
+
+}

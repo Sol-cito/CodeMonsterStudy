@@ -1,0 +1,28 @@
+import java.util.*;
+
+public class Main {
+	public static void main(String[] args) {
+		Scanner sc = new Scanner(System.in);
+
+		while (true) {
+			long answer = 1;
+			int n = sc.nextInt();
+			int k = sc.nextInt();
+			if (n == 0 && k == 0) {
+				break;
+			}
+
+			if (n - k < k) {
+				k = n - k;
+			}
+
+			for (int i = 1; i < k + 1; i++) {
+				answer *= n--;
+				answer /= i;
+			}
+
+			System.out.println(answer);
+		}
+
+	}
+}
