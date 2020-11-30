@@ -1,0 +1,29 @@
+import java.util.Scanner;
+
+public class Main {
+
+	public static int solution(int n) {
+		int answer = 0;
+		int[] SeongWoo = {5, 4, 3, 2, 1};
+
+		for(int i = 0; i<SeongWoo.length; i++) {
+			if(n/SeongWoo[i]>=1) {
+				answer += n/SeongWoo[i];
+				n = n%SeongWoo[i];
+			}
+		}
+		
+		return answer;
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		Scanner sc = new Scanner(System.in);
+		int n = sc.nextInt();
+		
+		System.out.println(solution(n));
+		
+	}
+
+}
