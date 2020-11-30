@@ -1,0 +1,25 @@
+import java.util.Scanner;
+
+public class Main {
+	
+	public static long solution(String abc) {
+		long answer = 0;
+		String[] array = abc.split(" ");
+		
+		for(int i = 0; i<array.length; i++) {
+			answer += Long.parseLong(array[i]);
+		}
+		
+		return answer;
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+        String abc = sc.nextLine();
+
+		System.out.println(solution(abc));
+
+	}
+
+}
