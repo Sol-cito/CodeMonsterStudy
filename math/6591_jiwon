@@ -1,0 +1,47 @@
+import java.util.ArrayList;
+import java.util.Scanner;
+
+public class Main {
+
+	public static long solution(String n) {
+		long answer = 1;
+
+		String[] stringTmp = n.split(" ");
+		long first = Long.parseLong(stringTmp[0]);
+		long second = Long.parseLong(stringTmp[1]);
+
+		if (first/2 < second)
+			second = first - second;
+
+		long son = 1;
+		long mother = 1;
+		for (int i = 1; i <= second; i++) {
+			son = first - i + 1;
+			mother = i;
+			answer = answer * son/mother;
+		}
+		//answer = son / mother;
+		return answer;
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		Scanner sc = new Scanner(System.in);
+		String n = sc.nextLine();
+		
+		ArrayList<Long> array = new ArrayList<>();
+		while (!n.equals("0 0")) {
+			if(!n.equals("0 0")) {
+				array.add(solution(n));
+			}
+			n = sc.nextLine();
+		}
+		
+		for(int i = 0; i<array.size(); i++) {
+			System.out.println(array.get(i));
+		}
+
+	}
+
+}
