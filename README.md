@@ -7,7 +7,7 @@
 1.README.md 수정해서 O 추가하기
 <br>
 2.소스코드 올리기
-니뽄
+니뽄ㅈ
 
 # Code Monster Study
 
