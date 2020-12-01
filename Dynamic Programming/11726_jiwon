@@ -1,0 +1,31 @@
+import java.util.Scanner;
+
+public class Main {
+
+	public static int solution(int n) {
+		int answer;
+		int[] values = new int[n+1];
+		for (int i = 1; i <= n; i++) {
+			if (i == 1) {
+				values[i] = 1;
+			} else if (i == 2) {
+				values[i] = 2;
+			} else {
+				values[i] = (values[i-1] + values[i-2])%10007;
+			}
+		}
+		answer = values[n];
+		return answer;
+	}
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc = new Scanner(System.in);
+
+		int n = sc.nextInt();
+
+		System.out.println(solution(n));
+
+	}
+
+}
