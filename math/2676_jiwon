@@ -1,0 +1,38 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+
+	public static long solution(String n) {
+		long answer = 0;
+		String[] tmp = n.split(" ");
+		long nNumber = Long.parseLong(tmp[0]);
+		long mNumber = Long.parseLong(tmp[1]);
+
+		if (nNumber < 0 || mNumber < 0 || mNumber > nNumber) {
+			return answer = 0;
+		} else if (mNumber == 0 || nNumber == mNumber) {
+			return answer = 1;
+		}
+
+		answer = mNumber*(nNumber-mNumber) +1;
+		
+		return answer;
+	}
+
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+		int times = Integer.parseInt(bf.readLine());
+		//System.out.println(times);
+		
+		for(int i = 0; i< times; i++) {
+			//BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			String n = bf.readLine();
+			System.out.println(solution(n));
+		}
+
+	}
+
+}
