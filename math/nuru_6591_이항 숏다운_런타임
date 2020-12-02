@@ -1,0 +1,35 @@
+import java.util.*;
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        
+        String cases = sc.nextLine();
+
+        while (cases != "0 0") {
+            long answer = 1;
+
+            int n =0;
+            int k =0;
+            
+            n= Integer.parseInt(cases.substring(0,cases.indexOf(" ")));
+            k= Integer.parseInt(cases.substring(cases.indexOf(" ")+1));
+            
+            if(k>n/2){
+                k =n-k;
+            }
+            
+            for(int i=n; i>n-k ;i--){
+                answer = answer*i;
+            }
+            for(int j=1;j<k+1;j++){
+                answer = answer/j;
+            }
+            
+            System.out.println(answer);
+            
+            //다음 케이스 조회
+            cases = sc.nextLine();
+        }
+
+    }
+}
