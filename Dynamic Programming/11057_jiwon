@@ -1,0 +1,36 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+
+	public static long solution(int n) {
+		long answer = 0;
+		long[] former = new long[10];
+		for (int i = 0; i < former.length; i++) {
+			former[i] = 1;
+		}
+		for (int j = 0; j < n; j++) {
+			long[] latter = new long[10];
+			for (int i = 0; i < latter.length; i++) {
+				if(i==0) {
+					latter[i] = 1;
+				} else {
+					latter[i] = (latter[i-1] + former[i])%10007;
+				}
+			}
+			former = latter;
+			answer = latter[9];
+		}
+		return answer;
+	}
+
+	public static void main(String[] args) throws IOException {
+		// TODO Auto-generated method stub
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int n = Integer.parseInt(br.readLine());
+
+		System.out.println(solution(n));
+	}
+
+}
