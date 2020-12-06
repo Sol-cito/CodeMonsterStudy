@@ -1,0 +1,49 @@
+
+import java.util.*;
+
+public class Main {
+
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+        int N = sc.nextInt();
+        int M = sc.nextInt();
+        int arr[] = new int[10 - M];
+        int nope[] = new int[M];
+        int answer = 0;
+        int start = 100;
+
+        for (int i = 0; i < M; i++) {
+            nope[i] = sc.nextInt();
+        }
+
+        int idx = 0;
+        for (int i = 0; i < 10; i++) {
+            boolean flag = false;
+            for (int j = 0; j < M; j++) {
+                if (i == nope[j]) {
+                    flag = true;
+                }
+            }
+            if (flag == false) {
+                arr[idx] = i;
+                idx++;
+            }
+        }
+
+        int numSize = (int) (Math.log10(N) + 1);
+        String tmpStr = "";
+
+        for (int i = numSize; i > 0; i--) {
+            tmpStr += findNum((N / (int)Math.pow(10, i)), arr);
+        }
+
+        System.out.println(answer);
+
+    }
+
+    public static String findNum(int tmpNum, int[] tmpArr) {
+        System.out.println(tmpNum);
+        return "";
+    }
+
+}

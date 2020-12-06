@@ -1,49 +1,29 @@
-
 import java.util.*;
 
 public class Main {
 
     public static void main(String args[]) {
+
         Scanner sc = new Scanner(System.in);
         int N = sc.nextInt();
-        int M = sc.nextInt();
-        int arr[] = new int[10 - M];
-        int nope[] = new int[M];
+        int arr[][] = new int[2][N + 6];
+        int dp[] = new int[N + 6];
         int answer = 0;
-        int start = 100;
 
-        for (int i = 0; i < M; i++) {
-            nope[i] = sc.nextInt();
+        for (int i = 1; i < N + 1; i++) {
+            arr[0][i] = sc.nextInt();
+            arr[1][i] = sc.nextInt();
         }
 
-        int idx = 0;
-        for (int i = 0; i < 10; i++) {
-            boolean flag = false;
-            for (int j = 0; j < M; j++) {
-                if (i == nope[j]) {
-                    flag = true;
-                }
+        for (int i = 1; i < N + 1; i++) {
+            if (i + arr[0][i] <= N + 1) {
+                dp[i + arr[0][i]] = Math.max(dp[i + arr[0][i]], dp[i] + arr[1][i]);
             }
-            if (flag == false) {
-                arr[idx] = i;
-                idx++;
-            }
+            dp[i + 1] = Math.max(dp[i], dp[i + 1]);
         }
 
-        int numSize = (int) (Math.log10(N) + 1);
-        String tmpStr = "";
-
-        for (int i = numSize; i > 0; i--) {
-            tmpStr += findNum((N / (int)Math.pow(10, i)), arr);
-        }
-
+        Arrays.sort(dp);
+        answer = dp[N + 5];
         System.out.println(answer);
-
     }
-
-    public static String findNum(int tmpNum, int[] tmpArr) {
-        System.out.println(tmpNum);
-        return "";
-    }
-
 }
