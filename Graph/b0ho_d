@@ -1,0 +1,57 @@
+
+import java.util.*;
+
+public class Main {
+
+    static boolean visit[][];
+    static int arr[][];
+    static int N;
+    static int M;
+
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+
+        N = sc.nextInt();
+        M = sc.nextInt();
+
+        visit = new boolean[N + 1][M + 1];
+        arr = new int[N + 1][M + 1];
+
+        for (int i = 1; i < N + 1; i++) {
+            String str = sc.nextLine();
+
+            for (int j = 1; j < M + 1; j++) {
+                System.out.println(str);
+                System.out.println(str.length());
+                //System.out.println(str.substring(j-1, j));
+                //arr[i][j] = Integer.parseInt(str(j - 1, j));
+            }
+        }
+
+        Queue<int[]> q = new LinkedList<>();
+        q.offer(new int[]{0, 0});
+
+        int drx[][] = {{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+
+        while (!q.isEmpty()) {
+            int next[] = q.poll();
+            visit[0][0] = true;
+
+            for (int i = 0; i < drx.length; i++) {
+                int x = next[0] + drx[i][0];
+                int y = next[1] + drx[i][1];
+
+                if (x > 0 && y > 0 && x < N + 1 && y < M + 1) {
+                    if (arr[x][y] != 0 && visit[x][y] != true) {
+                        q.offer(new int[]{x, y});
+                        visit[x][y] = true;
+                        arr[x][y] = arr[next[0]][next[1]] + 1;
+                    }
+                }
+            }
+        }
+
+        System.out.println(arr[N - 1][M - 1]);
+    }
+
+}
