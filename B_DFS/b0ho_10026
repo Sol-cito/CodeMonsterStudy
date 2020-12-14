@@ -1,0 +1,74 @@
+
+import java.util.*;
+
+public class Main {
+
+    static boolean[][] visit;
+    static boolean[][] visit2;
+    static String[][] arr;
+    static String[][] arr2;
+    static int N;
+    static String M;
+    static int[] cnt;
+    static int[][] drx;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        String answer = "";
+        N = sc.nextInt();
+        arr = new String[N + 1][N + 1];
+        arr2 = new String[N + 1][N + 1];
+        visit = new boolean[N + 1][N + 1];
+        visit2 = new boolean[N + 1][N + 1];
+        cnt = new int[2];
+        drx = new int[][]{{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        for (int i = 1; i < N + 1; i++) {
+            M = sc.next();
+            String[] tmp = M.split("");
+            for (int j = 1; j < N + 1; j++) {
+                arr[i][j] = tmp[j - 1];
+                arr2[i][j] = tmp[j - 1];
+                if (arr2[i][j].equals("G")) {
+                    arr2[i][j] = "R";
+                }
+            }
+        }
+
+        for (int i = 1; i < N + 1; i++) {
+            for (int j = 1; j < N + 1; j++) {
+                if (visit[i][j] == false) {
+                    visit = dfs(i, j, arr, visit);
+                    cnt[0]++;
+                }
+                if (visit2[i][j] == false) {
+                    visit2 = dfs(i, j, arr2, visit2);
+                    cnt[1]++;
+                }
+            }
+        }
+
+        answer = cnt[0] + " " + cnt[1];
+        System.out.println(answer);
+    }
+
+    public static boolean[][] dfs(int a, int b, String[][] list, boolean[][] visited) {
+        visited[a][b] = true;
+        for (int i = 0; i < 4; i++) {
+            int x = a + drx[i][0];
+            int y = b + drx[i][1];
+            if (x > 0 && x < N + 1 && y > 0 && y < N + 1) {
+                if (visited[x][y] == false) {
+                    if (list[x][y].equals(list[a][b])) {
+                        dfs(x, y, list, visited);
+                    }
+                }
+            }
+
+        }
+
+        return visited;
+
+    }
+
+}

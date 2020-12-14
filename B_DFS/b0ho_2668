@@ -1,0 +1,54 @@
+
+import java.util.*;
+
+public class Main {
+
+    static boolean[] visit;
+    static int[] arr;
+    static int N;
+    static int M;
+    static ArrayList<Integer> answer;
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        arr = new int[N + 1];
+        visit = new boolean[N + 1];
+        answer = new ArrayList<>();
+
+        for (int i = 1; i < N + 1; i++) {
+            M = sc.nextInt();
+            arr[i] = M;
+        }
+
+        for (int i = 1; i < N + 1; i++) {
+            if (visit[i] == false) {
+                visit[i] = true;
+                visit = dfs(i, i, visit);
+                visit[i] = false;
+            }
+        }
+
+        Collections.sort(answer);
+
+        System.out.println(answer.size());
+        for (int i = 0; i < answer.size(); i++) {
+            System.out.println(answer.get(i));
+        }
+    }
+
+    public static boolean[] dfs(int a, int b, boolean[] visited) {
+        if (arr[a] == b) {
+            answer.add(a);
+        }
+
+        if (visited[arr[a]] == false) {
+            visited[arr[a]] = true;
+            dfs(arr[a], b, visited);
+            visited[arr[a]] = false;
+        }
+
+        return visited;
+    }
+
+}

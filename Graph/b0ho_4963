@@ -1,0 +1,66 @@
+
+import java.util.*;
+
+public class Main {
+
+    static boolean visit[][];
+    static int arr[][];
+    static int w;
+    static int h;
+
+    public static void main(String args[]) {
+        Scanner sc = new Scanner(System.in);
+
+        while (true) {
+            w = sc.nextInt();
+            h = sc.nextInt();
+
+            if (w == 0 && h == 0) {
+                break;
+            }
+
+            visit = new boolean[h + 1][w + 1];
+            arr = new int[h + 1][w + 1];
+            int answer = 0;
+
+            for (int i = 1; i < h + 1; i++) {
+                for (int j = 1; j < w + 1; j++) {
+                    arr[i][j] = sc.nextInt();
+                    //System.out.print(arr[w][h]);
+                }
+                //System.out.println();
+            }
+
+            for (int i = 1; i < h + 1; i++) {
+                for (int j = 1; j < w + 1; j++) {
+                    if (visit[i][j] != true && arr[i][j] == 1) {
+                        dfs(i, j);
+                        answer++;
+                    }
+                }
+            }
+
+            System.out.println(answer);
+        }
+
+    }
+
+    public static void dfs(int x, int y) {
+        int drx[][] = {{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}};
+
+        visit[x][y] = true;
+
+        for (int i = 0; i < drx.length; i++) {
+            int n_x = x + drx[i][0];
+            int n_y = y + drx[i][1];
+
+            if (n_x <= h && n_y <= w && n_x > 0 && n_y > 0) {
+                if (arr[n_x][n_y] == 1 && visit[n_x][n_y] != true) {
+                    dfs(n_x, n_y);
+                }
+            }
+        }
+
+    }
+
+}
