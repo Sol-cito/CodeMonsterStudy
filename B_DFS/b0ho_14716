@@ -1,0 +1,67 @@
+
+import java.util.*;
+
+public class Main {
+
+    static int[][] arr;
+    static boolean[][] visit;
+    static int N;
+    static int M;
+    static int answer;
+    static int[][] drx = {{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}};
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        M = sc.nextInt();
+        arr = new int[N][M];
+        visit = new boolean[N][M];
+        answer = 0;
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                arr[i][j] = sc.nextInt();
+            }
+        }
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (arr[i][j] == 1 && visit[i][j] == false) {
+                    dfs(i, j);
+//                    for (int k = 0; k < N; k++) {
+//                        for (int l = 0; l < M; l++) {
+//                            System.out.print(arr[k][l]);
+//                        }
+//                        System.out.println();
+//                    }
+//                    System.out.println();
+                    answer++;
+                }
+            }
+        }
+
+        System.out.println(answer);
+
+    }
+
+    // visit 은 한번의 재귀에서만 각자 사용
+    // 방문한 1은 2로 변경
+    // 1을 처음 방문하면 answer++
+    // 이후 상하좌우대각선 탐색을 재귀 반복
+    public static void dfs(int a, int b) {
+        arr[a][b] = 2;
+        visit[a][b] = true;
+        for (int i = 0; i < drx.length; i++) {
+            int x = a + drx[i][0];
+            int y = b + drx[i][1];
+
+            if (x >= 0 && y >= 0 && x < N && y < M) {
+                if (arr[x][y] == 1 && visit[x][y] == false) {
+                    dfs(x, y);
+                }
+            }
+        }
+    }
+
+}
