@@ -1,0 +1,72 @@
+
+import java.util.*;
+
+public class Main {
+
+    static int N;
+    static ArrayList<Node>[] arr;
+    static boolean[] visit;
+    static int max;
+    static int node;
+
+    static class Node {
+        int to;
+        int weight;
+
+        Node(int t, int w) {
+            to = t;
+            weight = w;
+        }
+    }
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        N = sc.nextInt();
+        arr = new ArrayList[N + 1];
+        visit = new boolean[N + 1];
+        node = 1;
+        max = 0;
+
+        for (int i = 1; i < N + 1; i++) {
+            arr[i] = new ArrayList<>();
+        }
+
+        for (int i = 1; i < N; i++) {
+            int a = sc.nextInt();
+            int b = sc.nextInt();
+            int c = sc.nextInt();
+            arr[a].add(new Node(b, c));
+            arr[b].add(new Node(a, c));
+        }
+
+        dfs(node, 0);
+
+        visit = new boolean[N + 1];
+        max = 0;
+        dfs(node, 0);
+
+        System.out.println(max);
+
+    }
+
+    public static void dfs(int now, int dist) {
+
+        visit[now] = true;
+
+        if (max < dist) {
+            max = dist;
+            node = now;
+        }
+
+        for (Node node : arr[now]) {
+            int next = node.to;
+
+            if (visit[next] == false) {
+                dfs(next, dist + node.weight);
+            }
+        }
+
+    }
+
+}
