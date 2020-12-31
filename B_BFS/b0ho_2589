@@ -52,7 +52,7 @@ public class Main {
     }
 
     public static int bfs(int a, int b) {
-        Queue<Point> queue = new LinkedList<Point>();
+        Queue<Point> queue = new LinkedList<>();
         queue.add(new Point(a, b, 0));
         visit[a][b] = true;
 
