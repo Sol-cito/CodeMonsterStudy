@@ -38,7 +38,7 @@ public class Main {
                         if (M >= 0) System.arraycopy(arr[k], 0, tmp[k], 0, M);
                     }
 
-                    // 벽을 세우고 
+                    // 벽을 세우고
                     tmp[i][j] = 1;
                     // 또다른 벽을 세우기 위해 함수 시작, 최초의 벽은 세우고 시작한다
                     make(1);
