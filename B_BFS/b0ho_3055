@@ -22,7 +22,7 @@ public class Main {
         drx = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
 
         for (int i = 0; i < R; i++) {
-            // 문자형식의 맵은 
+            // 문자형식의 맵은
             // 문자열로 받고 char 리스트로 변환
             String str = sc.next();
             arr[i] = str.toCharArray();
@@ -73,7 +73,7 @@ public class Main {
                 int y = p.b + ints[1];
 
                 if (x >= 0 && y >= 0 && x < R && y < C) {
-                    // 현재가 물이므로 
+                    // 현재가 물이므로
                     // 다음 갈곳은 방문한 적 없고, 빈곳이어야 물이 될 수 있다.
                     // 물이 될 수 있는 곳은 후보가 된다
                     if (d_day[x][y] == 0 && arr[x][y] == '.') {
