@@ -6,146 +6,105 @@ public class Main {
     static int M;
     static int[][] arr;
     static int[][] tmp;
+    static boolean[][] visit;
     static int[][] drx;
     static int answer;
+    static int div;
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
         N = sc.nextInt();
         M = sc.nextInt();
-        arr = new int[N][M];
-        tmp = new int[N][M];
+        arr = new int[N + 1][M + 1];
+        tmp = new int[N + 1][M + 1];
+        visit = new boolean[N + 1][M + 1];
+        drx = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
+        answer = 0;
 
-        drx = new int[][]{{1, 0}, {-1, 0}, {0, -1}, {0, 1}};
-
-        // 맵을 받는다. 이맵은 최초의 맵으로 불변해야 한다
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
                 arr[i][j] = sc.nextInt();
             }
         }
 
-        // 맵에서 3개의 벽을 세울 수 있는 모든 경우를 찾아야한다
-        // 맵의 첫번째부터 모두 탐색
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                //벽을 세울 수 있다는 것은 벽이 없고 암묵적으로 바이러스도 없어야한다
-                // 즉 안전구역 == 0 인 곳일 때이다
-                if (arr[i][j] == 0) {
-                    // 맵의 상태가 바뀌므로 복사하여 쓴다
-                    for (int k = 0; k < N; k++) {
-                        if (M >= 0) System.arraycopy(arr[k], 0, tmp[k], 0, M);
-                    }
+        while (div < 2) {
 
-                    // 벽을 세우고 
-                    tmp[i][j] = 1;
-                    // 또다른 벽을 세우기 위해 함수 시작, 최초의 벽은 세우고 시작한다
-                    make(1);
-                    // 다음 케이스를 위해 허문다.
-                    // 이 방식을 사용하면 다시 허물 위치를 기억할 필요가 없다
-                    // 다시 허물어야 모든 3개이 벽 경우의 수를 찾을 수 있다
-                    tmp[i][j] = 0;
+            melt();
+            answer++;
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    arr[i][j] = tmp[i][j];
                 }
             }
+
+            div = 0;
+            visit = new boolean[N + 1][M + 1];
+
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    if (visit[i][j] == false && arr[i][j] != 0) {
+                        dfs(i, j);
+                        div++;
+                    }
+                }
+            }
+
+
+            if (div == 0) {
+                answer = 0;
+                break;
+            }
+
         }
 
-        //최대값을 이미 찾았기 때문에 결과만 출력
         System.out.println(answer);
 
     }
 
-    public static void make(int cnt) {
+    public static void melt() {
 
-        // 벽을 다 세웠으면 바이러스 감염 후 안전공간의 개수를 찾아야 한다
-        if (cnt == 3) {
-            bfs();
-            return;
-        }
-
-        // 벽이 3개가 될때까지 벽을 세워야 한다.
-        // 모든 경우의 수를 찾아야 한다.
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                if (tmp[i][j] == 0) {
-                    tmp[i][j] = 1;
-                    make(cnt + 1);
-                    tmp[i][j] = 0;
+                tmp[i][j] = (int) arr[i][j];
+                if (arr[i][j] == 0) {
+                    continue;
+                }
+
+                for (int k = 0; k < drx.length; k++) {
+                    int x = i + drx[k][0];
+                    int y = j + drx[k][1];
+
+                    if (x >= 0 && y >= 0 && x < N && y < M) {
+                        if (arr[x][y] == 0 && tmp[i][j] > 0) {
+                            tmp[i][j]--;
+                        }
+                    }
+
                 }
             }
         }
 
     }
 
-    // 굳이 구조화할 필요는 없지만 유형화를 위해서 사용
-    public static class Point {
-        int x;
-        int y;
+    public static void dfs(int a, int b) {
 
-        public Point(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
+        visit[a][b] = true;
 
-    // 더 이상 불가능할 때까지 감염을 확산 시키고
-    // 안전구역의 최대값을 찾는다
-    public static void bfs() {
-        Queue<Point> q = new LinkedList<>();
-        int[][] after = new int[N][M];
+        for (int i = 0; i < drx.length; i++) {
+            int x = a + drx[i][0];
+            int y = b + drx[i][1];
 
-        // 감염이 확산되면 맵이 바뀌므로 또 다시 복사한다
-        for (int k = 0; k < N; k++) {
-            if (M >= 0) System.arraycopy(tmp[k], 0, after[k], 0, M);
-        }
-
-        // 감염 확산 지는 모두 후보에 넣는다
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (after[i][j] == 2) {
-                    q.add(new Point(i, j));
-                }
-            }
-        }
-
-        // 더이상 확산 할것이 없을 때까지 확산하고 넣기를 반복한다
-        while (!q.isEmpty()) {
-            Point p = q.poll();
-            int x = p.x;
-            int y = p.y;
-
-            // 상하좌우 이동을 모두 고려
-            for (int[] ints : drx) {
-                int nx = x + ints[0];
-                int ny = y + ints[1];
-
-                //맵을 벗어나지 않으면서
-                if (nx >= 0 && nx < N && ny >= 0 && ny < M) {
-                    // 안전구역에 갈 수 있는 경우라면
-                    if (after[nx][ny] == 0) {
-                        // 감염시킨다
-                        after[nx][ny] = 2;
-                        // 감염된 경우 다시 후보에 추가한다
-                        q.add(new Point(nx, ny));
+            if (x > 0 && y > 0 && x < N && y < M) {
+                if (visit[x][y] == false) {
+                    if (arr[x][y] != 0) {
+                        dfs(x, y);
                     }
                 }
             }
 
         }
 
-        int max = 0;
-        // 감염이 끝나면 현재 상태 == 벽이 3워진 임의의 상태
-        // 에 대하여 안전구역의 개수를 구한다
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                if (after[i][j] == 0) {
-                    max++;
-                }
-            }
-        }
-
-        // 안전구역의 최대값은 매번 3개의 벽 케이스마다 찾는다
-        answer = Math.max(answer, max);
     }
 
 }

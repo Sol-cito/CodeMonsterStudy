@@ -32,8 +32,11 @@ public class Main {
 
             melt();
             answer++;
-            arr = tmp.clone();
-
+            for (int i = 0; i < N; i++) {
+                for (int j = 0; j < M; j++) {
+                    arr[i][j] = tmp[i][j];
+                }
+            }
 
             div = 0;
             visit = new boolean[N + 1][M + 1];
@@ -58,11 +61,12 @@ public class Main {
         System.out.println(answer);
 
     }
+
     public static void melt() {
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                tmp[i][j] = (int)arr[i][j];
+                tmp[i][j] = (int) arr[i][j];
                 if (arr[i][j] == 0) {
                     continue;
                 }
