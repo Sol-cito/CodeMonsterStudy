@@ -2,89 +2,99 @@ import java.util.*;
 
 public class Main {
 
-    static int N;
-    static int M;
-    static int[][] arr;
-    static int[][] tmp;
-    static boolean[][] visit;
+    static int R;
+    static int C;
+    static char[][] arr;
+    static int[][] d_day;
+    static int[][] visit;
     static int[][] drx;
-    static int answer;
-    static int div;
+    static Point start;
+    static Point end;
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        N = sc.nextInt();
-        M = sc.nextInt();
-        arr = new int[N + 1][M + 1];
-        tmp = new int[N + 1][M + 1];
-        visit = new boolean[N + 1][M + 1];
+        R = sc.nextInt();
+        C = sc.nextInt();
+        arr = new char[R + 1][C + 1];
+        d_day = new int[R + 1][C + 1];
+        visit = new int[R + 1][C + 1];
         drx = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        answer = 0;
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                arr[i][j] = sc.nextInt();
+        for (int i = 0; i < R; i++) {
+            String str = sc.next();
+            arr[i] = str.toCharArray();
+
+            for (int j = 0; j < C; j++) {
+                if (arr[i][j] == 'S') {
+                    start = new Point(i, j);
+                } else if (arr[i][j] == 'D') {
+                    end = new Point(i, j);
+                }
             }
         }
 
-        while (div < 2) {
+        flush();
+        bfs();
 
-            melt();
-            answer++;
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < M; j++) {
-                    arr[i][j] = tmp[i][j];
-                }
-            }
-
-            div = 0;
-            visit = new boolean[N + 1][M + 1];
-
-            for (int i = 0; i < N; i++) {
-                for (int j = 0; j < M; j++) {
-                    if (arr[i][j] != 0 && visit[i][j] == false) {
-                        bfs(i, j);
-                        div++;
-                    }
-                }
-            }
-
-
-            if (div == 0) {
-                answer = 0;
-                break;
-            }
-
+        if (visit[end.a][end.b] == 0) {
+            System.out.println("KAKTUS");
+        } else {
+            System.out.println(visit[end.a][end.b]);
         }
-
-        System.out.println(answer);
 
     }
 
-    public static void melt() {
+    public static void flush() {
+        Queue<Point> q = new LinkedList<>();
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < M; j++) {
-                tmp[i][j] = (int) arr[i][j];
-                if (arr[i][j] == 0) {
-                    continue;
-                }
-
-                for (int k = 0; k < drx.length; k++) {
-                    int x = i + drx[k][0];
-                    int y = j + drx[k][1];
-
-                    if (x >= 0 && y >= 0 && x < N && y < M) {
-                        if (arr[x][y] == 0 && tmp[i][j] > 0) {
-                            tmp[i][j]--;
-                        }
-                    }
-
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++) {
+                if (arr[i][j] == '*') {
+                    q.add(new Point(i, j));
                 }
             }
         }
 
+        while (!q.isEmpty()) {
+            Point p = q.poll();
+
+            for (int[] ints : drx) {
+                int x = p.a + ints[0];
+                int y = p.b + ints[1];
+
+                if (x >= 0 && y >= 0 && x < R && y < C) {
+                    if (d_day[x][y] == 0 && arr[x][y] == '.') {
+                        d_day[x][y] = d_day[p.a][p.b] + 1;
+                        q.add(new Point(x, y));
+                    }
+                }
+            }
+        }
+
+    }
+
+    public static void bfs() {
+        Queue<Point> q = new LinkedList<>();
+        q.add(new Point(start.a, start.b));
+
+        while (!q.isEmpty()) {
+            Point p = q.poll();
+
+            for (int[] ints : drx) {
+                int x = p.a + ints[0];
+                int y = p.b + ints[1];
+
+                if (x >= 0 && y >= 0 && x < R && y < C) {
+                    if (visit[x][y] == 0 && arr[x][y] != 'X' && arr[x][y] != '*' && arr[x][y] != 'S') {
+                        if (d_day[x][y] == 0 || d_day[x][y] > visit[p.a][p.b] + 1) {
+                            visit[x][y] = visit[p.a][p.b] + 1;
+                            q.add(new Point(x, y));
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public static class Point {
@@ -95,31 +105,6 @@ public class Main {
             this.a = a;
             this.b = b;
         }
-    }
-
-    public static void bfs(int a, int b) {
-        Queue<Point> q = new LinkedList<>();
-        q.add(new Point(a, b));
-        visit[a][b] = true;
-
-        while (!q.isEmpty()) {
-            Point p = q.poll();
-
-            for (int i = 0; i < drx.length; i++) {
-                int x = p.a + drx[i][0];
-                int y = p.b + drx[i][1];
-
-                if (x > 0 && y >0 && x < N && y < M) {
-                    if (visit[x][y] == false) {
-                        if (arr[x][y] != 0) {
-                            visit[x][y] = true;
-                            q.add(new Point(x, y));
-                        }
-                    }
-                }
-            }
-        }
-
     }
 
 }
