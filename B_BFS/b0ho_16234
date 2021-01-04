@@ -34,7 +34,7 @@ public class Main {
             visit = new boolean[N][N];
             answer++;
 
-            // 모든 맵을 돌면서 
+            // 모든 맵을 돌면서
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < N; j++) {
                     // 방문하지 않은 곳만 탐색하여 2개이상 나눠진 영토를 구분할 수 있다
