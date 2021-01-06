@@ -3,54 +3,48 @@ import java.util.*;
 public class Main {
 
     static int N;
-    static int[][] arr;
-    static int[][] land;
+    static int M;
+    static char[][] arr;
+    static char[][] tmp;
     static boolean[][] visit;
     static int[][] drx;
     static int answer;
 
-    // 각 대륙을 구분하기
-    // 다리 연결하며 최소 찾기
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
         N = sc.nextInt();
-        arr = new int[N][N];
-        land = new int[N][N];
-        visit = new boolean[N][N];
+        arr = new char[N][M];
+        tmp = new char[N][M];
+        visit = new boolean[N][M];
         drx = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        answer = 9999;
-        int landNum = 0;
+        answer = 100;
 
         for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                arr[i][j] = sc.nextInt();
-            }
+            String str = sc.next();
+            arr[i] = str.toCharArray();
         }
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+        for (int i = 1; i < N - 1; i++) {
+            for (int j = 1; j < M - 1; j++) {
                 if (!visit[i][j] && arr[i][j] == 1) {
-                    landNum++;
-                    findLand(i, j, landNum);
+                    answer = Math.min(answer, bfs(i, j, 0));
                 }
             }
         }
 
-        for (int i = 1; i <= landNum; i++) {
-            visit = new boolean[N][N];
-            answer = Math.min(answer, findMin(i));
+        if (answer == 100) {
+            answer = -1;
         }
 
         System.out.println(answer);
 
     }
 
-    public static void findLand(int a, int b, int n) {
+    public static int bfs(int a, int b, int n) {
         Queue<Point> q = new LinkedList<>();
         q.add(new Point(a, b));
         visit[a][b] = true;
-        land[a][b] = n;
 
         while (!q.isEmpty()) {
             Point p = q.poll();
@@ -61,58 +55,23 @@ public class Main {
                 int nx = x + d[0];
                 int ny = y + d[1];
 
-                if (nx >= 0 && ny >= 0 && nx < N && ny < N) {
+                if (nx >= 0 && ny >= 0 && nx < N && ny < M) {
                     if (!visit[nx][ny]) {
                         if (arr[nx][ny] == 1) {
                             q.add(new Point(nx, ny));
-                            land[nx][ny] = n;
                             visit[nx][ny] = true;
                         }
                     }
-                }
-            }
-        }
-    }
-
-    public static int findMin(int n) {
-        Queue<Point> q = new LinkedList<>();
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                if (arr[i][j] == 1 && land[i][j] == n) {
-                    q.add(new Point(i, j));
-                    visit[i][j] = true;
-                }
-            }
-        }
-
-        int size = 0;
-        while (!q.isEmpty()) {
-            int qs = q.size();
-            for (int i = 0; i < qs; i++) {
-                Point p = q.poll();
-                int x = p.a;
-                int y = p.b;
-
-                for (int[] d : drx) {
-                    int nx = x + d[0];
-                    int ny = y + d[1];
-
-                    if (nx >= 0 && ny >= 0 && nx < N && ny < N) {
-                        if (!visit[nx][ny]) {
-                            if (arr[nx][ny] == 1 && land[nx][ny] != n) {
-                                return size;
-                            }
-                            if (arr[nx][ny] == 0) {
-                                q.add(new Point(nx, ny));
-                                visit[nx][ny] = true;
-                            }
-                        }
+                    if (arr[nx][ny] == 'O' && tmp[nx][ny] == 'R') {
+                        return n;
+                    }
+                    if (arr[nx][ny] == 'O' && tmp[nx][ny] == 'B') {
+                        return 100;
                     }
                 }
             }
-            size++;
         }
-        return size;
+        return n;
     }
 
     public static class Point {
