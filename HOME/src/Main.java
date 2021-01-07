@@ -46,7 +46,9 @@ public class Main {
                         return 1;
                     } else if (a.b > b.b) {
                         return 1;
-                    } else return -1;
+                    } else {
+                        return -1;
+                    }
                 };
                 list.sort(comp);
 
