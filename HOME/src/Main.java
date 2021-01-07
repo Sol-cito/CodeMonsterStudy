@@ -2,10 +2,8 @@ import java.util.*;
 
 public class Main {
 
-    static int N;
-    static int M;
     static char[][] arr;
-    static char[][] tmp;
+    static ArrayList<Point> list;
     static boolean[][] visit;
     static int[][] drx;
     static int answer;
@@ -13,36 +11,76 @@ public class Main {
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        N = sc.nextInt();
-        arr = new char[N][M];
-        tmp = new char[N][M];
-        visit = new boolean[N][M];
+        // 입력이 없고 사이즈는 고정이다
+        arr = new char[12][6];
         drx = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        answer = 100;
+        answer = 0;
 
-        for (int i = 0; i < N; i++) {
+        // 문자열 맵 한번에 받기
+        for (int i = 0; i < 12; i++) {
             String str = sc.next();
             arr[i] = str.toCharArray();
         }
 
-        for (int i = 1; i < N - 1; i++) {
-            for (int j = 1; j < M - 1; j++) {
-                if (!visit[i][j] && arr[i][j] == 1) {
-                    answer = Math.min(answer, bfs(i, j, 0));
+        while (true) {
+            // 터져야할 녀석들
+            list = new ArrayList<>();
+            visit = new boolean[12][6];
+            for (int i = 11; i >= 0; i--) {
+                for (int j = 0; j < 6; j++) {
+                    // 빈공간은 살필 필요 없다
+                    if (arr[i][j] != '.') {
+                        // 터져야할 녀석들을 찾기 시작
+                        bfs(i, j);
+                    }
                 }
             }
-        }
 
-        if (answer == 100) {
-            answer = -1;
+            // 4개이상 중복인 터질 녀석들이 있는 경우만
+            if (list.size() > 0) {
+                // 터트리고 내려오는 과정을 위해서
+                // 터질 후보들을 정렬 시켜준다 - 담을 때는 순서가 보장되지 않았다
+                // x, y 모두 오름차순으로
+                Comparator<Point> comp = new Comparator<Point>() {
+                    @Override
+                    public int compare(Point a, Point b) {
+                        if (a.a > b.a) {
+                            return 1;
+                        } else if (a.a > b.a) {
+                            return 1;
+                        } else return -1;
+                    }
+                };
+                Collections.sort(list, comp);
+
+                // 터질 후보들 모두에 대해서
+                for (Point point : list) {
+                    for (int j = point.a; j > 0; j--) {
+                        // 터질 녀석을 바로위의 녀석으로 바꾼다
+                        arr[j][point.b] = arr[j - 1][point.b];
+                        // 이부분이 반복되면서 터질녀석부터 한칸씩 내려온다
+                    }
+                    // 다 내려오면 맨 위는 비어야 한다
+                    arr[0][point.b] = '.';
+                }
+
+                // 한번이라도 터졌으면 연쇄 증가
+                answer++;
+            } else {
+                // 더이상 연쇄가 없었으면 종료
+                break;
+            }
         }
 
         System.out.println(answer);
 
     }
 
-    public static int bfs(int a, int b, int n) {
+    public static void bfs(int a, int b) {
+        // 전체 사이클 용
         Queue<Point> q = new LinkedList<>();
+        // 터질 후보 용
+        Queue<Point> tmp = new LinkedList<>();
         q.add(new Point(a, b));
         visit[a][b] = true;
 
@@ -50,28 +88,37 @@ public class Main {
             Point p = q.poll();
             int x = p.a;
             int y = p.b;
+            // 터질 후보에 넣는다
+            tmp.add(new Point(x, y));
 
             for (int[] d : drx) {
                 int nx = x + d[0];
                 int ny = y + d[1];
 
-                if (nx >= 0 && ny >= 0 && nx < N && ny < M) {
+                if (nx >= 0 && ny >= 0 && nx < 12 && ny < 6) {
                     if (!visit[nx][ny]) {
-                        if (arr[nx][ny] == 1) {
+                        // 방문할 곳이 현재와 같다 : 같은 색이므로 
+                        // 터지기 후보의 후보가 된다 = 큐에 추가
+                        if (arr[nx][ny] == arr[a][b]) {
                             q.add(new Point(nx, ny));
                             visit[nx][ny] = true;
                         }
                     }
-                    if (arr[nx][ny] == 'O' && tmp[nx][ny] == 'R') {
-                        return n;
-                    }
-                    if (arr[nx][ny] == 'O' && tmp[nx][ny] == 'B') {
-                        return 100;
-                    }
                 }
             }
         }
-        return n;
+
+        // 터질 후보가 4이상이다 : 모두 터지기 리스트에 넣는다
+        if (tmp.size() >= 4) {
+            while (!tmp.isEmpty()) {
+                Point p = tmp.poll();
+                int x = p.a;
+                int y = p.b;
+                // 여기에 담아서 터트린다
+                list.add(new Point(x, y));
+            }
+        }
+
     }
 
     public static class Point {
@@ -82,6 +129,7 @@ public class Main {
             this.a = a;
             this.b = b;
         }
+
     }
 
 }
