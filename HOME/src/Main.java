@@ -41,17 +41,14 @@ public class Main {
                 // 터트리고 내려오는 과정을 위해서
                 // 터질 후보들을 정렬 시켜준다 - 담을 때는 순서가 보장되지 않았다
                 // x, y 모두 오름차순으로
-                Comparator<Point> comp = new Comparator<Point>() {
-                    @Override
-                    public int compare(Point a, Point b) {
-                        if (a.a > b.a) {
-                            return 1;
-                        } else if (a.a > b.a) {
-                            return 1;
-                        } else return -1;
-                    }
+                Comparator<Point> comp = (a, b) -> {
+                    if (a.a > b.a) {
+                        return 1;
+                    } else if (a.b > b.b) {
+                        return 1;
+                    } else return -1;
                 };
-                Collections.sort(list, comp);
+                list.sort(comp);
 
                 // 터질 후보들 모두에 대해서
                 for (Point point : list) {
