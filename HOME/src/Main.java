@@ -2,120 +2,109 @@ import java.util.*;
 
 public class Main {
 
-    static char[][] arr;
+    static int N;
+    static int M;
+    static int[][] arr;
     static ArrayList<Point> list;
-    static boolean[][] visit;
+    static int safe;
+    static boolean[] s_visit;
+    static int[][] visit;
     static int[][] drx;
     static int answer;
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        // 입력이 없고 사이즈는 고정이다
-        arr = new char[12][6];
+        N = sc.nextInt();
+        M = sc.nextInt();
+        arr = new int[N][N];
+        safe = 0;
+        list = new ArrayList<>();
+        visit = new int[N][N];
+        s_visit = new boolean[10];
         drx = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        answer = 0;
+        answer = 2500;
 
-        // 문자열 맵 한번에 받기
-        for (int i = 0; i < 12; i++) {
-            String str = sc.next();
-            arr[i] = str.toCharArray();
-        }
-
-        while (true) {
-            // 터져야할 녀석들
-            list = new ArrayList<>();
-            visit = new boolean[12][6];
-            for (int i = 11; i >= 0; i--) {
-                for (int j = 0; j < 6; j++) {
-                    // 빈공간은 살필 필요 없다
-                    if (arr[i][j] != '.') {
-                        // 터져야할 녀석들을 찾기 시작
-                        bfs(i, j);
-                    }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                arr[i][j] = sc.nextInt();
+                if (arr[i][j] == 2) {
+                    list.add(new Point(i, j));
+                } else if (arr[i][j] == 0) {
+                    safe++;
                 }
-            }
-
-            // 4개이상 중복인 터질 녀석들이 있는 경우만
-            if (list.size() > 0) {
-                // 터트리고 내려오는 과정을 위해서
-                // 터질 후보들을 정렬 시켜준다 - 담을 때는 순서가 보장되지 않았다
-                // x, y 모두 오름차순으로
-                Comparator<Point> comp = (a, b) -> {
-                    if (a.a > b.a) {
-                        return 1;
-                    } else if (a.b > b.b) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                };
-                list.sort(comp);
-
-                // 터질 후보들 모두에 대해서
-                for (Point point : list) {
-                    for (int j = point.a; j > 0; j--) {
-                        // 터질 녀석을 바로위의 녀석으로 바꾼다
-                        arr[j][point.b] = arr[j - 1][point.b];
-                        // 이부분이 반복되면서 터질녀석부터 한칸씩 내려온다
-                    }
-                    // 다 내려오면 맨 위는 비어야 한다
-                    arr[0][point.b] = '.';
-                }
-
-                // 한번이라도 터졌으면 연쇄 증가
-                answer++;
-            } else {
-                // 더이상 연쇄가 없었으면 종료
-                break;
             }
         }
 
-        System.out.println(answer);
+
+        find(0, 0);
+
+        if (answer == 2500) {
+            System.out.println(-1);
+        } else {
+            System.out.println(answer);
+        }
 
     }
 
-    public static void bfs(int a, int b) {
-        // 전체 사이클 용
+    public static void find(int index, int cnt) {
+        if (cnt == M) {
+            bfs();
+            return;
+        }
+
+        for (int i = index; i < list.size(); i++) {
+            if (!s_visit[i]) {
+                s_visit[i] = true;
+                find(i + 1, cnt + 1);
+                s_visit[i] = false;
+            }
+        }
+    }
+
+    public static void bfs() {
         Queue<Point> q = new LinkedList<>();
-        // 터질 후보 용
-        Queue<Point> tmp = new LinkedList<>();
-        q.add(new Point(a, b));
-        visit[a][b] = true;
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                visit[i][j] = -1;
+            }
+        }
+
+        int infect = 0;
+        int time = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+            Point p = list.get(i);
+            if (s_visit[i]) {
+                q.add(new Point(p.a, p.b));
+                visit[p.a][p.b] = 0;
+            }
+        }
 
         while (!q.isEmpty()) {
             Point p = q.poll();
             int x = p.a;
             int y = p.b;
-            // 터질 후보에 넣는다
-            tmp.add(new Point(x, y));
 
             for (int[] d : drx) {
                 int nx = x + d[0];
                 int ny = y + d[1];
 
-                if (nx >= 0 && ny >= 0 && nx < 12 && ny < 6) {
-                    if (!visit[nx][ny]) {
-                        // 방문할 곳이 현재와 같다 : 같은 색이므로 
-                        // 터지기 후보의 후보가 된다 = 큐에 추가
-                        if (arr[nx][ny] == arr[a][b]) {
-                            q.add(new Point(nx, ny));
-                            visit[nx][ny] = true;
+                if (nx >= 0 && ny >= 0 && nx < N && ny < N) {
+                    if (visit[nx][ny] == -1 && arr[nx][ny] != 1) {
+                        visit[nx][ny] = visit[x][y] + 1;
+                        if (arr[nx][ny] == 0) {
+                            infect++;
+                            time = visit[nx][ny];
                         }
+                        q.add(new Point(nx, ny));
                     }
                 }
             }
         }
 
-        // 터질 후보가 4이상이다 : 모두 터지기 리스트에 넣는다
-        if (tmp.size() >= 4) {
-            while (!tmp.isEmpty()) {
-                Point p = tmp.poll();
-                int x = p.a;
-                int y = p.b;
-                // 여기에 담아서 터트린다
-                list.add(new Point(x, y));
-            }
+        if (infect == safe) {
+            answer = Math.min(answer, time);
         }
 
     }
