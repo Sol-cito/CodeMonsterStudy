@@ -1,0 +1,100 @@
+import java.util.*;
+
+public class Main {
+
+    static int T;
+    static int A;
+    static int B;
+    static boolean[] visit;
+    static int tmp;
+    static String answer;
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        T = sc.nextInt();
+
+        //테스트 케이스가 많은 경우
+        while (T-- > 0) {
+
+            A = sc.nextInt();
+            B = sc.nextInt();
+            // 숫자는 9999 까지
+            visit = new boolean[10000];
+
+            bfs();
+
+            System.out.println(answer);
+        }
+    }
+
+
+    public static void bfs() {
+        Queue<Point> q = new LinkedList<>();
+        // 시작은 시작 숫자, 그리고 아직 펑션이 없다
+        q.add(new Point(A, ""));
+        // 해당 숫자는 다시 오지 않을 것
+        visit[A] = true;
+
+        while (!q.isEmpty()) {
+            Point p = q.poll();
+            // 현재 숫자
+            int num = p.a;
+            // 현재까지 펑션 -> 후에 정답이 될 것
+            String func = p.b;
+
+            // B 와 같아지면 종료
+            if (num == B) {
+                // 현재까지의 펑션이 정답이된다
+                answer = func;
+            }
+
+            // 더블 펑션
+            // 10000 이상인 경우 처리
+            tmp = num * 2 % 10000;
+            if (!visit[tmp]) {
+                // 이 숫자는 다시 오지 않는다
+                visit[tmp] = true;
+                // 숫자가 바뀌고, 평션이 쌓인다
+                q.add(new Point(tmp, func + "D"));
+            }
+
+            // 마이너스 펑션
+            // 0보다 작은 경우 처리
+            tmp = num - 1 < 0 ? 9999 : num - 1;
+            if (!visit[tmp]) {
+                visit[tmp] = true;
+                q.add(new Point(tmp, func + "S"));
+            }
+
+            // 왼쪽 펑션
+            tmp = num % 1000 * 10 + num / 1000;
+            if (!visit[tmp]) {
+                visit[tmp] = true;
+                q.add(new Point(tmp, func + "L"));
+            }
+
+            // 오른쪽 펑션
+            tmp = num % 10 * 1000 + num / 10;
+            if (!visit[tmp]) {
+                visit[tmp] = true;
+                q.add(new Point(tmp, func + "R"));
+            }
+
+        }
+
+    }
+
+    // 이번에는 큐에 당시의 숫자와 정답 배열을 담아야 한다
+    public static class Point {
+        int a;
+        String b;
+
+        public Point(int a, String b) {
+            this.a = a;
+            this.b = b;
+        }
+
+    }
+
+}

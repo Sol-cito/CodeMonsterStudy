@@ -2,117 +2,78 @@ import java.util.*;
 
 public class Main {
 
-    static int N;
-    static int M;
-    static int[][] arr;
-    static ArrayList<Point> list;
-    static boolean[] s_visit;
-    static int[][] visit;
-    static int[][] drx;
-    static int safe;
-    static int answer;
+    static int T;
+    static int A;
+    static int B;
+    static boolean[] visit;
+    static int tmp;
+    static String answer;
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
-        N = sc.nextInt();
-        M = sc.nextInt();
-        arr = new int[N][N];
-        list = new ArrayList<>();
-        visit = new int[N][N];
-        s_visit = new boolean[10];
-        drx = new int[][]{{-1, 0}, {1, 0}, {0, 1}, {0, -1}};
-        safe = 0;
-        answer = 2500;
+        T = sc.nextInt();
 
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                arr[i][j] = sc.nextInt();
-                if (arr[i][j] == 2) {
-                    list.add(new Point(i, j));
-                } else if (arr[i][j] == 0) {
-                    safe++;
-                }
-            }
-        }
+        while (T-- > 0) {
 
-        find(0, 0);
+            A = sc.nextInt();
+            B = sc.nextInt();
+            visit = new boolean[10000];
 
-        if (answer == 2500) {
-            System.out.println(-1);
-        } else {
+            bfs();
+
             System.out.println(answer);
         }
-
     }
 
-    public static void find(int index, int cnt) {
-        if (cnt == M) {
-            bfs();
-            return;
-        }
-
-        for (int i = index; i < list.size(); i++) {
-            if (!s_visit[i]) {
-                s_visit[i] = true;
-                find(i + 1, cnt + 1);
-                s_visit[i] = false;
-            }
-        }
-    }
 
     public static void bfs() {
         Queue<Point> q = new LinkedList<>();
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-                visit[i][j] = -1;
-            }
-        }
-
-        int infect = 0;
-        int time = 0;
-
-        for (int i = 0; i < list.size(); i++) {
-            Point p = list.get(i);
-            if (s_visit[i]) {
-                q.add(new Point(p.a, p.b));
-                visit[p.a][p.b] = 0;
-            }
-        }
+        q.add(new Point(A, ""));
+        visit[A] = true;
 
         while (!q.isEmpty()) {
             Point p = q.poll();
-            int x = p.a;
-            int y = p.b;
+            int num = p.a;
+            String func = p.b;
 
-            for (int[] d : drx) {
-                int nx = x + d[0];
-                int ny = y + d[1];
-
-                if (nx >= 0 && ny >= 0 && nx < N && ny < N) {
-                    if (visit[nx][ny] == -1 && arr[nx][ny] != 1) {
-                        visit[nx][ny] = visit[x][y] + 1;
-                        if (arr[nx][ny] == 0) {
-                            infect++;
-                            time = visit[nx][ny];
-                        }
-                        q.add(new Point(nx, ny));
-                    }
-                }
+            if (num == B) {
+                answer = func;
             }
-        }
 
-        if (infect == safe) {
-            answer = Math.min(answer, time);
+            tmp = num * 2 % 10000;
+            if (!visit[tmp]) {
+                visit[tmp] = true;
+                q.add(new Point(tmp, func + "D"));
+            }
+
+            tmp = num - 1 < 0 ? 9999 : num - 1;
+            if (!visit[tmp]) {
+                visit[tmp] = true;
+                q.add(new Point(tmp, func + "S"));
+            }
+
+            tmp = num % 1000 * 10 + num / 1000;
+            if (!visit[tmp]) {
+                visit[tmp] = true;
+                q.add(new Point(tmp, func + "L"));
+            }
+
+            tmp = num % 10 * 1000 + num / 10;
+            if (!visit[tmp]) {
+                visit[tmp] = true;
+                q.add(new Point(tmp, func + "R"));
+            }
+
         }
 
     }
 
     public static class Point {
         int a;
-        int b;
+        String b;
 
-        public Point(int a, int b) {
+        public Point(int a, String b) {
             this.a = a;
             this.b = b;
         }
