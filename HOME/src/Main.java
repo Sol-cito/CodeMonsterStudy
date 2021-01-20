@@ -2,45 +2,31 @@ import java.util.*;
 
 public class Main {
 
-    static int N;
-    static int[] arr;
-    static int left;
-    static int right;
-    static long answer;
+    static char[] A;
+    static char[] B;
+    static int[][] dp;
+    static int answer;
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        N = sc.nextInt();
-        arr = new int[N];
-        answer = 0;
+        A = sc.next().toCharArray();
+        B = sc.next().toCharArray();
 
-        for (int i = 0; i < N; i++) {
-            arr[i] = sc.nextInt();
-        }
+        dp = new int[A.length+1][B.length+1];
 
-        Arrays.sort(arr);
-
-        for (left = 0; left < N - 1; left += 2) {
-            if (arr[left] < 1 && arr[left + 1] < 1) {
-                answer += arr[left] * arr[left + 1];
-            } else {
-                break;
+        for (int i = 1; i <= A.length; i++) {
+            for (int j = 1; j <= B.length; j++) {
+                if (A[i - 1] == B[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
             }
         }
 
-        for (right = N - 1; right > 0; right -= 2) {
-            if (arr[right] > 1 && arr[right - 1] > 1) {
-                answer += arr[right] * arr[right - 1];
-            } else {
-                break;
-            }
-        }
-
-        for (int i = left; i <= right; i++) {
-            answer += arr[i];
-        }
+        answer = dp[A.length][B.length];
 
         System.out.println(answer);
 
