@@ -2,31 +2,38 @@ import java.util.*;
 
 public class Main {
 
-    static char[] A;
-    static char[] B;
-    static int[][] dp;
+    static int N;
+    static HashMap<String, Integer> list;
+    static String[] tmp;
+    static boolean[] visit;
     static int answer;
 
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        A = sc.next().toCharArray();
-        B = sc.next().toCharArray();
+        N = sc.nextInt();
+        list = new HashMap();
+        tmp = new String[N];
+        visit = new boolean[N];
 
-        dp = new int[A.length+1][B.length+1];
+        for (int i = 0; i < N; i++) {
+            String str = sc.next();
+            list.put(str, i);
+        }
 
-        for (int i = 1; i <= A.length; i++) {
-            for (int j = 1; j <= B.length; j++) {
-                if (A[i - 1] == B[j - 1]) {
-                    dp[i][j] = dp[i - 1][j - 1] + 1;
-                } else {
-                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        for (int i = 0; i < N; i++) {
+            tmp[i] = sc.next();
+        }
+
+        for (int i = 0; i < N; i++) {
+            for (int j = i + 1; j < N; j++) {
+                if (list.get(tmp[i]) > list.get(tmp[j])) {
+                    answer++;
+                    break;
                 }
             }
         }
-
-        answer = dp[A.length][B.length];
 
         System.out.println(answer);
 
