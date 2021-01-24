@@ -2,63 +2,46 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int N;
-    static int[] N_arr;
-    static int M;
-    static int[] M_arr;
-    static boolean[][] dp;
+    static String A;
+    static String B;
+    static int[][] dp;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        N_arr = new int[N + 1];
+        A = st.nextToken();
         st = new StringTokenizer(br.readLine());
+        B = st.nextToken();
 
-        for (int i = 1; i <= N; i++) {
-            N_arr[i] = Integer.parseInt(st.nextToken());
-        }
+        int lenA = A.length();
+        int lenB = B.length();
+        dp = new int[1001][1001];
+        StringBuffer answer = new StringBuffer();
 
-        dp = new boolean[N + 1][N + 1];
-
-        for (int i = 1; i <= N; i++) {
-            dp[i][i] = true;
-        }
-
-        for (int i = 1; i < N; i++) {
-            if (N_arr[i] == N_arr[i + 1]) {
-                dp[i][i + 1] = true;
-            }
-        }
-
-        for (int i = 3; i <= N; i++) {
-            for (int j = 1; j <= N - i + 1; j++) {
-                if (N_arr[j] == N_arr[j + i - 1] && dp[j + 1][j + i - 2]) {
-                    dp[j][j + i - 1] = true;
+        for (int i = 1; i <= lenA; i++) {
+            for (int j = 1; j <= lenB; j++) {
+                if (A.charAt(i - 1) == B.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
                 }
             }
         }
 
-        st = new StringTokenizer(br.readLine());
-        M = Integer.parseInt(st.nextToken());
-        M_arr = new int[2];
-        StringBuilder answer = new StringBuilder();
-
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            M_arr[0] = Integer.parseInt(st.nextToken());
-            M_arr[1] = Integer.parseInt(st.nextToken());
-
-            if (dp[M_arr[0]][M_arr[1]]) {
-                answer.append(1);
-            } else {
-                answer.append(0);
+        while (!(lenA == 0 || lenB == 0)) {
+            if (dp[lenA][lenB] == dp[lenA][lenB - 1]) {
+                lenB--;
+            } else if (dp[lenA][lenB] == dp[lenA - 1][lenB]) {
+                lenA--;
+            } else if (dp[lenA][lenB] - 1 == dp[lenA - 1][lenB - 1]) {
+                answer.append(A.charAt(lenA - 1));
+                lenA--;
+                lenB--;
             }
-
-            answer.append("\n");
         }
 
-        System.out.println(answer.toString());
+        System.out.println(answer.length());
+        System.out.println(answer.reverse().toString());
 
     }
 
