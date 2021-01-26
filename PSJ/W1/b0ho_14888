@@ -1,0 +1,80 @@
+import java.util.*;
+import java.io.*;
+
+public class Main {
+    static int N;
+    static int[] arr;
+    static ArrayList<String> op;
+    static long Min;
+    static long Max;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+
+        arr = new int[N];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        op = new ArrayList<>();
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < 4; i++) {
+            int o = Integer.parseInt(st.nextToken());
+            while (o-- > 0) {
+                if (i == 0) {
+                    op.add("+");
+                } else if (i == 1) {
+                    op.add("-");
+                } else if (i == 2) {
+                    op.add("*");
+                } else {
+                    op.add("/");
+                }
+            }
+        }
+
+        Max = 0;
+        Min = 1000000000;
+
+        rec(arr[0], 0);
+
+        System.out.println(Max);
+        System.out.println(Min);
+
+    }
+
+    public static void rec(long tmp, int opIdx) {
+        if (opIdx == N - 1) {
+            if (tmp < Min) {
+                Min = tmp;
+            }
+            if (tmp > Max) {
+                Max = tmp;
+            }
+            return;
+        }
+
+        for (int i = 0; i < N - 1; i++) {
+            String o = op.get(i);
+
+            if (o == "+") {
+                tmp = tmp + arr[opIdx];
+            }
+            if (o == "-") {
+                tmp = tmp - arr[opIdx];
+            }
+            if (o == "*") {
+                tmp = tmp * arr[opIdx];
+            }
+            if (o == "/") {
+                tmp = tmp / arr[opIdx];
+            }
+            rec(tmp, opIdx + 1);
+        }
+
+    }
+
+}
