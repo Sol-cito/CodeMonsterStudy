@@ -2,43 +2,69 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int T;
     static int N;
-    static String[] arr;
-    static StringBuilder answer;
+    static int[] arr;
+    static int[] op;
+    static long Min;
+    static long Max;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        T = Integer.parseInt(st.nextToken());
+        N = Integer.parseInt(st.nextToken());
 
-        while (T-- > 0) {
+        arr = new int[N];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
 
-            st = new StringTokenizer(br.readLine());
-            N = Integer.parseInt(st.nextToken());
-            arr = new String[N];
-            answer = new StringBuilder();
+        op = new int[4];
+        st = new StringTokenizer(br.readLine());
+        for (int i = 0; i < 4; i++) {
+            op[i] = Integer.parseInt(st.nextToken());
+        }
 
-            for (int i = 0; i < N; i++) {
-                st = new StringTokenizer(br.readLine());
-                arr[i] = st.nextToken();
+        Max = Integer.MIN_VALUE;
+        Min = Integer.MAX_VALUE;
+
+        rec(arr[0], 1);
+
+        System.out.println(Max);
+        System.out.println(Min);
+
+    }
+
+    public static void rec(long tmp, int idx) {
+
+        if (idx == N) {
+            if (tmp < Min) {
+                Min = tmp;
             }
+            if (tmp > Max) {
+                Max = tmp;
+            }
+            return;
+        }
 
-            Arrays.sort(arr);
-
-            for (int i = 1; i < N; i++) {
-                if (arr[i].startsWith(arr[i - 1])) {
-                    answer.append("NO");
-                    break;
+        for (int i = 0; i < 4; i++) {
+            if (op[i] > 0) {
+                op[i]--;
+                if (i == 0) {
+                    rec(tmp + arr[idx], idx + 1);
                 }
+                if (i == 1) {
+                    rec(tmp - arr[idx], idx + 1);
+                }
+                if (i == 2) {
+                    rec(tmp * arr[idx], idx + 1);
+                }
+                if (i == 3) {
+                    rec(tmp / arr[idx], idx + 1);
+                }
+
+                op[i]++;
             }
-
-            if (!answer.toString().equals("NO")) {
-                answer.append("YES");
-            }
-
-            System.out.println(answer.toString());
-
         }
 
     }

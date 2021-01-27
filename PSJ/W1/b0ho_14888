@@ -4,7 +4,7 @@ import java.io.*;
 public class Main {
     static int N;
     static int[] arr;
-    static ArrayList<String> op;
+    static int[] op;
     static long Min;
     static long Max;
 
@@ -19,35 +19,25 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        op = new ArrayList<>();
+        op = new int[4];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < 4; i++) {
-            int o = Integer.parseInt(st.nextToken());
-            while (o-- > 0) {
-                if (i == 0) {
-                    op.add("+");
-                } else if (i == 1) {
-                    op.add("-");
-                } else if (i == 2) {
-                    op.add("*");
-                } else {
-                    op.add("/");
-                }
-            }
+            op[i] = Integer.parseInt(st.nextToken());
         }
 
-        Max = 0;
-        Min = 1000000000;
+        Max = Integer.MIN_VALUE;
+        Min = Integer.MAX_VALUE;
 
-        rec(arr[0], 0);
+        rec(arr[0], 1);
 
         System.out.println(Max);
         System.out.println(Min);
 
     }
 
-    public static void rec(long tmp, int opIdx) {
-        if (opIdx == N - 1) {
+    public static void rec(long tmp, int idx) {
+
+        if (idx == N) {
             if (tmp < Min) {
                 Min = tmp;
             }
@@ -57,24 +47,113 @@ public class Main {
             return;
         }
 
-        for (int i = 0; i < N - 1; i++) {
-            String o = op.get(i);
+        for (int i = 0; i < 4; i++) {
+            if (op[i] > 0) {
+                op[i]--;
+                if (i == 0) {
+                    rec(tmp + arr[idx], idx + 1);
+                }
+                if (i == 1) {
+                    rec(tmp - arr[idx], idx + 1);
+                }
+                if (i == 2) {
+                    rec(tmp * arr[idx], idx + 1);
+                }
+                if (i == 3) {
+                    rec(tmp / arr[idx], idx + 1);
+                }
 
-            if (o == "+") {
-                tmp = tmp + arr[opIdx];
+                op[i]++;
             }
-            if (o == "-") {
-                tmp = tmp - arr[opIdx];
-            }
-            if (o == "*") {
-                tmp = tmp * arr[opIdx];
-            }
-            if (o == "/") {
-                tmp = tmp / arr[opIdx];
-            }
-            rec(tmp, opIdx + 1);
         }
 
     }
 
 }
+
+//
+//import java.util.*;
+//import java.io.*;
+//
+//public class Main {
+//    static int N;
+//    static int[] arr;
+//    static ArrayList<String> op;
+//    static long Min;
+//    static long Max;
+//
+//    public static void main(String[] args) throws IOException {
+//        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+//        StringTokenizer st = new StringTokenizer(br.readLine());
+//        N = Integer.parseInt(st.nextToken());
+//
+//        arr = new int[N];
+//        st = new StringTokenizer(br.readLine());
+//        for (int i = 0; i < N; i++) {
+//            arr[i] = Integer.parseInt(st.nextToken());
+//        }
+//
+//        op = new ArrayList<>();
+//        st = new StringTokenizer(br.readLine());
+//        for (int i = 0; i < 4; i++) {
+//            int o = Integer.parseInt(st.nextToken());
+//            while (o-- > 0) {
+//                if (i == 0) {
+//                    op.add("+");
+//                } else if (i == 1) {
+//                    op.add("-");
+//                } else if (i == 2) {
+//                    op.add("*");
+//                } else {
+//                    op.add("/");
+//                }
+//            }
+//        }
+//
+//        Max = 0;
+//        Min = 1000000000;
+//
+//        rec(arr[0], 1, 0);
+//
+//        System.out.println(Max);
+//        System.out.println(Min);
+//
+//    }
+//
+//    public static void rec(long tmp, int numIdx, int opIdx) {
+//
+//        if (opIdx == N - 1) {
+//            numIdx++;
+//            opIdx = 0;
+//        }
+//
+//        if (numIdx == N) {
+//            if (tmp < Min) {
+//                Min = tmp;
+//            }
+//            if (tmp > Max) {
+//                Max = tmp;
+//            }
+//            return;
+//        }
+//
+//        String o = op.get(opIdx);
+//
+//        if (o == "+") {
+//            tmp = tmp + arr[numIdx];
+//        }
+//        if (o == "-") {
+//            tmp = tmp - arr[numIdx];
+//        }
+//        if (o == "*") {
+//            tmp = tmp * arr[numIdx];
+//        }
+//        if (o == "/") {
+//            tmp = tmp / arr[numIdx];
+//        }
+//
+//        rec(tmp, numIdx, opIdx + 1);
+//
+//    }
+//
+//}
