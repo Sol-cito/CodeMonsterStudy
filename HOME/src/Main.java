@@ -3,69 +3,48 @@ import java.io.*;
 
 public class Main {
     static int N;
-    static int[] arr;
-    static int[] op;
-    static long Min;
-    static long Max;
+    static int M;
+    static int D;
+    static int G;
+    static int[][] arr;
+    static int answer;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        D = Integer.parseInt(st.nextToken());
+        G = 3;
 
-        arr = new int[N];
-        st = new StringTokenizer(br.readLine());
+        arr = new int[N + 1][];
         for (int i = 0; i < N; i++) {
-            arr[i] = Integer.parseInt(st.nextToken());
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < M; j++) {
+                arr[i][j] = Integer.parseInt(st.nextToken());
+            }
         }
 
-        op = new int[4];
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < 4; i++) {
-            op[i] = Integer.parseInt(st.nextToken());
-        }
+        // 3 궁수의 자리를 정한다
+        choice();
 
-        Max = Integer.MIN_VALUE;
-        Min = Integer.MAX_VALUE;
-
-        rec(arr[0], 1);
-
-        System.out.println(Max);
-        System.out.println(Min);
+        System.out.println(answer);
 
     }
 
-    public static void rec(long tmp, int idx) {
+    public static void choice() {
 
-        if (idx == N) {
-            if (tmp < Min) {
-                Min = tmp;
-            }
-            if (tmp > Max) {
-                Max = tmp;
-            }
-            return;
-        }
+    }
 
-        for (int i = 0; i < 4; i++) {
-            if (op[i] > 0) {
-                op[i]--;
-                if (i == 0) {
-                    rec(tmp + arr[idx], idx + 1);
-                }
-                if (i == 1) {
-                    rec(tmp - arr[idx], idx + 1);
-                }
-                if (i == 2) {
-                    rec(tmp * arr[idx], idx + 1);
-                }
-                if (i == 3) {
-                    rec(tmp / arr[idx], idx + 1);
-                }
+    public static void attack() {
 
-                op[i]++;
-            }
-        }
+    }
+
+    public static void move() {
+
+    }
+
+    public static void check() {
 
     }
 
