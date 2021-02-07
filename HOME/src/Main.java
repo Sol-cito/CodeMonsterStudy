@@ -2,51 +2,63 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int M;
-    static int[] dp;
-    static String answer;
+    static int L;
+    static int W;
+    static int H;
+    static int N;
+    static int[][] arr;
+    static boolean flag;
+    static int answer;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        M = Integer.parseInt(st.nextToken());
+        L = Integer.parseInt(st.nextToken());
+        W = Integer.parseInt(st.nextToken());
+        H = Integer.parseInt(st.nextToken());
 
-        dp = new int[Integer.MAX_VALUE/4];
-        dp[0] = 5;
-        dp[1] = 13;
-        answer = " ";
+        st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
 
-        if (M > 13) {
-            int n = 1;
-            while (dp[n++] < M) {
-                if (dp[n - 2] + 1 + dp[n - 1] <= (int) Math.pow(2, 30) - 1) {
-                    dp[n] = dp[n - 2] + 1 + dp[n - 1];
-                }
-            }
-            answer = find(n - 1, M);
-        } else {
-            String str = "Messi Gimossi";
-            answer = str.substring(M - 1, M);
+        arr = new int[N][2];
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            arr[i][0] = (int) Math.pow(2, Integer.parseInt(st.nextToken()));
+            arr[i][1] = Integer.parseInt(st.nextToken());
         }
 
-        if (answer == " ") {
-            System.out.println("Messi Messi Gimossi");
+        Arrays.sort(arr, new Comparator<int[]>() {
+            public int compare(int[] o1, int[] o2) {
+                return o2[0] - o1[0];
+            }
+        });
+
+        divide(L, W, H, 0);
+
+        if (flag) {
+            System.out.println(-1);
         } else {
             System.out.println(answer);
         }
     }
 
-    public static String find(int idx, int m) {
-        if (idx <= 1) {
-            String str = "Messi Gimossi";
-            answer = str.substring(m - 1, m);
-        } else if (m > dp[idx - 1] + 1) {
-            find(idx - 2, m - dp[idx - 1] - 1);
-        } else if (m < dp[idx - 1]) {
-            find(idx - 1, m);
+    public static void divide(int l, int w, int h, int idx) {
+        if (l == 0 || w == 0 || h == 0) {
+            return;
+        }
+        for (int i = idx; i < arr.length; i++) {
+            if (arr[i][1] != 0 && l >= arr[i][0] && w >= arr[i][0] && h >= arr[i][0]) {
+                arr[i][1]--;
+                answer++;
+                divide(l - arr[i][0], w, h, i);
+                divide(arr[i][0], w - arr[i][0], h, i);
+                divide(arr[i][0], arr[i][0], h - arr[i][0], i);
+                return;
+            }
         }
 
-        return answer;
+        flag = true;
+
     }
 
 }
