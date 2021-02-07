@@ -2,62 +2,51 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int T;
-    static int N;
-    static int[] arr;
-    static int answer;
+    static int M;
+    static int[] dp;
+    static String answer;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        T = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
 
-        while (T-- > 0) {
-            answer = 0;
-            st = new StringTokenizer(br.readLine());
-            N = Integer.parseInt(st.nextToken());
-            arr = new int[N];
+        dp = new int[Integer.MAX_VALUE/4];
+        dp[0] = 5;
+        dp[1] = 13;
+        answer = " ";
 
-            st = new StringTokenizer(br.readLine());
-            for (int i = 0; i < N; i++) {
-                arr[i] = Integer.parseInt(st.nextToken());
+        if (M > 13) {
+            int n = 1;
+            while (dp[n++] < M) {
+                if (dp[n - 2] + 1 + dp[n - 1] <= (int) Math.pow(2, 30) - 1) {
+                    dp[n] = dp[n - 2] + 1 + dp[n - 1];
+                }
             }
+            answer = find(n - 1, M);
+        } else {
+            String str = "Messi Gimossi";
+            answer = str.substring(M - 1, M);
+        }
 
-            answer = find(0, N - 1);
-
+        if (answer == " ") {
+            System.out.println("Messi Messi Gimossi");
+        } else {
             System.out.println(answer);
         }
-
     }
 
-    public static int find(int left, int right) {
-        if (left == right) {
-            return arr[right];
+    public static String find(int idx, int m) {
+        if (idx <= 1) {
+            String str = "Messi Gimossi";
+            answer = str.substring(m - 1, m);
+        } else if (m > dp[idx - 1] + 1) {
+            find(idx - 2, m - dp[idx - 1] - 1);
+        } else if (m < dp[idx - 1]) {
+            find(idx - 1, m);
         }
 
-        int mid = (left + right) / 2;
-        int left_sum = find(left, mid);
-        int right_sum = find(mid + 1, right);
-        int merge = merge(left, mid, right);
-
-        return Math.max(Math.max(left_sum, right_sum), merge);
-    }
-
-    public static int merge(int left, int mid, int right) {
-        int left_sum = Integer.MIN_VALUE;
-        int right_sum = Integer.MIN_VALUE;
-
-        for (int i = mid, tmp = 0; i >= left; i--) {
-            tmp += arr[i];
-            left_sum = Math.max(left_sum, tmp);
-        }
-
-        for (int i = mid + 1, tmp = 0; i <= right; i++) {
-            tmp += arr[i];
-            right_sum = Math.max(right_sum, tmp);
-        }
-
-        return left_sum + right_sum;
+        return answer;
     }
 
 }
