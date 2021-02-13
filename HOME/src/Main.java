@@ -2,47 +2,39 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
+    static int T;
     static int N;
-    static int M;
     static String[] S;
-    static String[] arr;
     static Trie root;
-    static int answer;
+    static String[] answer;
 
     public static void main(String[] args) throws IOException {
+        StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        N = Integer.parseInt(st.nextToken());
-        M = Integer.parseInt(st.nextToken());
+        T = Integer.parseInt(br.readLine());
+        answer = new String[T];
 
-        S = new String[N];
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            S[i] = st.nextToken();
-        }
+        while (T-- > 0) {
+            answer[T] = "YES";
+            root = new Trie();
+            N = Integer.parseInt(br.readLine());
+            S = new String[N];
 
-        arr = new String[M];
-        for (int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            arr[i] = st.nextToken();
-        }
-
-        root = new Trie();
-
-        for (int i = 0; i < N; i++) {
-            insert(S[i]);
-        }
-
-        answer = 0;
-
-        for (int i = 0; i < M; i++) {
-            if (find(arr[i])) {
-                answer++;
+            for (int i = 0; i < N; i++) {
+                S[i] = br.readLine();
             }
+
+            for (int i = 0; i < N; i++) {
+                if (answer[T].equals("YES")) {
+                    insert(S[i]);
+                    System.out.println();
+                }
+            }
+
+            sb.append(answer[T] + "\n");
         }
 
-        System.out.println(answer - 1);
-
+        System.out.println(sb.toString());
     }
 
     public static void insert(String word) {
@@ -50,35 +42,20 @@ public class Main {
 
         for (int i = 0; i < word.length(); i++) {
             char alpha = word.charAt(i);
-            int idx = alpha - 'a';
+            int idx = alpha - 48;
+            System.out.print(idx);
 
-            if (Node.node[idx] == null) {
-                Trie tmp = new Trie();
-                Node.node[idx] = tmp;
-                Node = tmp;
-            } else {
-                Node = Node.node[idx];
+            if (Node.finish) {
+                answer[T] = "NO";
+                return;
+            } else if (Node.node[idx] == null) {
+                Node.node[idx] = new Trie();
             }
+
+            Node = Node.node[idx];
         }
 
         Node.finish = true;
-    }
-
-    public static boolean find(String word) {
-        Trie Node = root;
-
-        for (int i = 0; i < word.length(); i++) {
-            char alpha = word.charAt(i);
-            int idx = alpha - 'a';
-
-            if (Node.node[idx] == null) {
-                return false;
-            } else {
-                Node = Node.node[idx];
-            }
-        }
-
-        return true;
     }
 
     public static class Trie {
@@ -86,7 +63,7 @@ public class Main {
         boolean finish;
 
         public Trie() {
-            this.node = new Trie[26];
+            this.node = new Trie[10];
             this.finish = false;
         }
     }
