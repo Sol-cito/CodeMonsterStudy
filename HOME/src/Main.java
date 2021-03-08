@@ -3,141 +3,55 @@ import java.io.*;
 
 public class Main {
     static int N;
-    static Pair[] arr;
-    static int[] list;
-    static Pair[] print;
-    static boolean[] visit;
-    static int cnt;
+    static int[][][] dp;
     static StringBuilder answer;
 
-    //2565 문제에 print 를 추가한 문제
     public static void main(String[] args) throws IOException {
         answer = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(br.readLine());
-        arr = new Pair[N];
-        list = new int[N];
-        print = new Pair[N];
-        //인덱스(좌측이)가 N의 범위가 아니다
-        visit = new boolean[500001];
+        //dp 문제인데 기억해야할 것들이 많은 경우
+        dp = new int[N + 1][2][3];
 
-        if (N == 1) {
-            System.out.println(0);
-            return;
-        }
-
-        for (int i = 0; i < N; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            //왼쪽과 오른족을 하나에 담는다
-            //이 후 왼쪽은 정렬되어 인덱스로 활용한다
-            arr[i] = new Pair(a, b);
-            //visit 은 input 범위 이므로
-            //해당 인덱스에 방문여부를 일단 true 로
-            //이후 lis 에 해당하는 경우 false 로 바꿀 것임
-            visit[a] = true;
-        }
-
-        //왼쪽 전봇대를 기준으로 정렬
-        Arrays.sort(arr);
-
-        list[0] = arr[0].y;
-        //출력을 위한 배열을 추가
-        print[0] = new Pair(0, arr[0].x);
-        int j = 0;
-
-        //lis 이분탐색 중 출력을 위한 배열 추가
-        for (int i = 1; i < N; i++) {
-            if (list[j] < arr[i].y) {
-                j++;
-                list[j] = arr[i].y;
-
-                //i 는 N 까지의 인덱스
-                //print[i]에 lis 길이와 왼쪽 전봇대를 저장
-                // : 삭제대상은 왼쪽 전봇대 숫자임
-                //일단 lis 프린트 목록을 구한뒤 전체에서 빼줘야함
-                print[i] = new Pair(j, arr[i].x);
-            } else {
-                int lb = lowerBound(0, j, arr[i].y);
-                list[lb] = arr[i].y;
-                //위치 변화가 있는 경우 lis 카운터 는 증가하지 않을것임
-                print[i] = new Pair(lb, arr[i].x);
-                cnt++;
-            }
-        }
-
-        //이전 문제처럼 교체되어야 하는 순간의 수와 동일
-        answer.append(cnt).append("\n");
-
-        for (int i = 0; i < print.length; i++) {
-            System.out.print(print[i].x + " ");
-        }
-        System.out.println();
-        //lis 최대값부터 검사하여
-        //visit 중 lis 에 해당하면 체크를 해제
-        //삭제 목록을 출력해야 하므로 바로 출력하면 안됨
-
-        // 1 2 3 4 5 6 7  8  9
-        // 1 2 4 6 7 9 10 11 12
-        // 6 2 1 2 3 4 7  2  9
-        // 1 1 1 2 3 4 5  2  6
-        // 0 0 0 1 2 3 4  1  5
-        // 1 2 3 4 7 9
-        // 6
-
-        for (int i = N - 1; i >= 0; i--) {
-            if (print[i].x == j) {
-                //lis 여부는 x 값으로 판단하지만
-                //방문 기준은 y 갑을 기준으로 해야함
-                //처음 lis 맥스 값을 만남 = lis 배열임
-                //= 해당문제 삭제 대상이 아님 = 체크 해제
-                //-> 이후 다음 lis 맥스값에 대하여 검사
-                visit[print[i].y] = false;
-                j--;
-            }
-        }
-
-        //체크된 목록 = 삭제해야될 목록이므로 출력한다
-        //답은 여러개라고 하였으니 정렬만되면 상관없는 듯
-        for (int i = 0; i < visit.length; i++) {
-            if (visit[i]) {
-                answer.append(i).append("\n");
-            }
-        }
+        //top-down
+        //재귀를 이용하는 dp
+        //큰 문제에서 쪼개어간다
+        answer.append(rec(N, 0, 0));
 
         System.out.print(answer);
     }
 
-    //lowerBound는 동일하게 구함
-    public static int lowerBound(int start, int end, int target) {
-        while (start < end) {
-            int mid = (start + end) / 2;
-
-            if (list[mid] >= target) {
-                end = mid;
-            } else {
-                start = mid + 1;
-            }
+    //재귀적으로 함수를 호출하여 답을 얻는다
+    //메모이제이션을 통해 bottom-up의 효율을 찾는다
+    //메모이제이션 : 일종의 캐시로 이미 계산한 것을 계산하지 않는다
+    public static int rec(int day, int late, int absent) {
+        //기저 사례
+        if (late == 2 || absent == 3) {
+            return 0;
         }
 
-        return end;
-    }
-
-    //객체 정렬을 위해 compareTo
-    public static class Pair implements Comparable<Pair> {
-        int x;
-        int y;
-
-        Pair(int x, int y) {
-            this.x = x;
-            this.y = y;
+        //성공 조건
+        if (day == 0) {
+            return 1;
         }
 
-        @Override
-        public int compareTo(Pair a) {
-            return this.x - a.x;
+        //dp (캐시) 사용
+        if (dp[day][late][absent] != 0) {
+            return dp[day][late][absent];
         }
+
+        int tmp = 0;
+        //출석
+        tmp += rec(day - 1, late, 0);
+        //지각
+        tmp += rec(day - 1, late + 1, 0);
+        //결석
+        tmp += rec(day - 1, late, absent + 1);
+
+        //dp (캐시) 에 저장
+        dp[day][late][absent] = tmp % 1000000;
+
+        return dp[day][late][absent];
     }
 
 }
